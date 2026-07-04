@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Panoptes — Security Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark"></div>
+    <div class="brand-text">
+      <h1>PANOPTES</h1>
+      <p>Biometric entrance monitoring — prototype build</p>
+    </div>
+  </div>
+  <div class="status-cluster">
+    <div class="status-chip"><span class="dot live"></span> System live</div>
+    <div class="status-chip"><span class="dot" id="alertDot"></span> <span id="alertStatus">No active alerts</span></div>
+    <div class="clock mono" id="clock">--:--:--</div>
+  </div>
+</header>
+
+<div class="grid">
+
+  <!-- Gates -->
+  <div class="panel">
+    <div class="panel-title">Gates</div>
+    <div class="entrance-list" id="entranceList"></div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="num" id="statInside">0</div>
+        <div class="label">Inside</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="statScans">0</div>
+        <div class="label">Scans today</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log -->
+  <div class="panel">
+    <div class="panel-title">
+      <span>Live Access Log</span>
+      <span class="mono" style="font-size:10.5px; color:var(--text-dimmer);">auto-updating</span>
+    </div>
+    <div class="log-scroll">
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>User</th>
+            <th>Gate</th>
+            <th>Dir</th>
+            <th>Confidence</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="panel">
+    <div class="panel-title">Alerts</div>
+    <div class="alert-list" id="alertList">
+      <div class="empty-alerts" id="emptyAlerts">No anomalies detected.<br>Panoptes is watching.</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
