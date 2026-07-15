@@ -26,18 +26,53 @@ panoptes/
     ├── matching.py
     ├── anomaly.py
     ├── simulate_traffic.py
-    └── requirements.txt
+    ├── requirements.txt
+    └── iris/                     Real OpenCV iris matching pipeline
+        ├── segmentation.py
+        ├── normalization.py
+        ├── encoding.py
+        ├── matcher.py
+        ├── pipeline.py
+        ├── enroll.py
+        ├── verify.py
+        ├── evaluate.py
+        └── sample_data/           56 sample images, 8 subjects (CASIA-IrisV1)
 ```
 
 **Backend** — Flask API backed by TinyDB (a document-based, NoSQL-style store — a zero-setup stand-in for MongoDB). Handles scan events, logs, alerts, and derived state (who's currently inside, per-gate counts).
 
 **Frontend** — Plain HTML/CSS/JS dashboard, no build step. Polls the backend every 1.5s and renders live gate status, the access log, and any anomaly alerts.
 
-**Matching** — currently mocked (`backend/matching.py` picks a random enrolled user rather than doing real iris comparison), since there's no camera/hardware in this demo. The file documents the real approach (segment → encode → compare against enrolled templates) for whoever picks this up next.
+**Matching** — two layers, deliberately kept separate:
+- *Live demo* (`backend/matching.py`): mocked — picks a random enrolled user, since `simulate_traffic.py` has no real images to feed it and the dashboard needs continuous fake traffic to demo against.
+- *Real pipeline* (`backend/iris/`): an actual OpenCV-based iris recognition implementation — segmentation (Hough circle detection), Daugman rubber-sheet normalization, Gabor-filter texture encoding, and Hamming-distance matching with rotation tolerance. Tested against 56 real iris images (CASIA-IrisV1 sample, 8 subjects) — see [Iris matching pipeline](#iris-matching-pipeline) below. Not yet wired into the live API; runnable standalone to prove it works.
 
 **Anomaly detection** — rule-based, not ML (`backend/anomaly.py`): flags rapid re-scans and low-confidence accepted matches. Reasonable for a prototype; a trained model would need more real log data than a demo produces.
 
 **Gate config** — `backend/config.py` is the single source of truth for gate IDs, names, and types (`entrance` / `exit` / `both`). The frontend fetches this from the API rather than duplicating it.
+
+## Iris matching pipeline
+
+`backend/iris/` is a real (not mocked) iris recognition implementation, built and tested against actual iris images rather than assumed to work.
+
+**Pipeline:** `segmentation.py` (locate pupil/iris boundaries via Hough circles, constrained to be concentric) → `normalization.py` (Daugman rubber-sheet unwrap to a fixed 64×512 grid) → `encoding.py` (4-orientation Gabor filter bank, CLAHE contrast normalization, sign-binarized into an iris code) → `matcher.py` (Hamming distance with ±8 column rotation search for head-tilt tolerance).
+
+**Try it yourself:**
+```powershell
+cd backend
+py -m iris.enroll      # enrolls 1 reference image per sample subject
+py -m iris.verify       # matches the held-out images against those templates
+py -m iris.evaluate     # reports genuine vs. impostor distance distributions
+```
+
+**Honest results**, evaluated on 56 sample images (8 subjects, CASIA-IrisV1):
+- Genuine-pair (same eye) mean Hamming distance: **0.476** (stdev 0.014)
+- Impostor-pair (different eyes) mean Hamming distance: **0.488** (stdev 0.004)
+- Top-1 identification accuracy: **58.3%** (vs. 12.5% random-chance baseline for 8 subjects)
+
+That's a real, measurable signal — nowhere near production biometric accuracy, but far better than chance, and an honest result to report rather than an inflated one. The two distance distributions overlap considerably, which is why accept/reject thresholding is much less reliable than top-1 identification here.
+
+**What would improve this** (in rough order of impact): eyelid/eyelash occlusion masking (currently none — lashes corrupt part of every code), a proper 2D complex log-Gabor phase-quadrant encoding instead of a simplified real-valued sign encoding, multiple enrollment images per user averaged into one template, and a larger sample set. All reasonable next steps, not done here given the prototype's scope and timeline.
 
 ## Running it
 
@@ -83,7 +118,8 @@ Then open **http://localhost:8000**.
 
 ## Roadmap
 
-- [ ] Real iris matching pipeline (OpenCV, Kaggle iris dataset for mock enrollment data)
+- [ ] Wire the real iris pipeline into `/api/scan` (needs a camera or a way to feed it real captured images)
+- [ ] Occlusion masking + multi-scale encoding to improve match accuracy
 - [ ] Swap TinyDB → MongoDB if this needs to scale past a demo
 - [ ] AutoCAD-based entrance/camera placement simulation
 - [ ] WebSocket push instead of polling, if latency becomes noticeable
