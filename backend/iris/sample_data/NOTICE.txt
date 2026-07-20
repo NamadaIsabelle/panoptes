@@ -1,0 +1,17 @@
+Sample data provenance
+=======================
+
+These images are a small subset (8 subjects, 7 images each = 56 images)
+of CASIA-IrisV1, a public iris image database released by the Chinese
+Academy of Sciences' Institute of Automation (CASIA) for research and
+educational use: http://biometrics.idealtest.org/
+
+They were sourced via a public GitHub mirror used in an educational
+course project (github.com/ntachukwu/python-iris-recognition, MIT
+licensed for the code; images are CASIA's, not that repo author's).
+
+Included here purely for local development/testing of this school
+prototype's biometric matching pipeline — not for redistribution or
+any commercial use. If this project moves beyond a demo, replace this
+with your own enrolled users' data, collected with proper consent and
+under CASIA's own terms if their data is used again.

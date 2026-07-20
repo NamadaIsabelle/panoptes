@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.egg-info/
+
+# TinyDB data file — generated at runtime, don't commit demo data
+backend/panoptes_db.json
+
+# Generated iris templates — regenerate with `python -m iris.enroll`
+backend/iris/enrolled_templates.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.code-workspace
