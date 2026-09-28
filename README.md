@@ -1,13 +1,13 @@
-Panoptes — Biometric Entrance Monitoring (Prototype)
+Panoptes — Biometric Authentication System (Prototype)
 📖 Overview
-Panoptes is a prototype security system for institutions, built around iris-based biometric authentication. Inspired by Panoptes, the many‑eyed giant of Greek myth, the system is designed to track entries/exits and flag anomalies.
+Panoptes is a prototype biometric entrance monitoring system for institutions. Inspired by Panoptes, the many‑eyed giant of Greek myth, it is designed to track entries/exits and flag anomalies.
 
-Unlike traditional ID badges (which can be shared or copied), Panoptes ties access to something you can’t lend out — your eyes.
+Unlike traditional ID badges (which can be shared or copied), Panoptes integrates multiple authentication options — iris recognition, facial recognition, voice, fingerprint, and traditional ID verification — giving users flexibility based on comfort and availability.
 
 ⚠️ This is a prototype for demo purposes, not a production security system.
 
 🚀 Features
-Biometric Authentication: Iris recognition pipeline (OpenCV-based segmentation, normalization, encoding, matching).
+Biometric Authentication: Iris, facial, voice, fingerprint, plus fallback ID verification.
 
 Frontend Dashboard: HTML/CSS/JS live view of gates, logs, and alerts.
 
@@ -15,75 +15,43 @@ Backend API: Flask + TinyDB, simulates traffic and anomaly detection.
 
 Anomaly Detection: Rule-based flags for rapid re-scans and low-confidence matches.
 
-Extensible Design: Future support for voice, facial recognition, fingerprint, and traditional ID verification.
+Extensible Design: Modular pipeline to add or swap biometric methods.
 
 🛠️ Tech Stack
 Frontend: HTML, CSS, JavaScript
 
 Backend: Python (Flask), TinyDB
 
-Biometrics: OpenCV iris recognition pipeline
+Biometrics: OpenCV (iris, facial), audio processing (voice), fingerprint matching pipeline
 
-Data: CASIA-IrisV1 sample dataset (56 images, 8 subjects)
-
-📂 Project Structure
-Code
-panoptes/
-├── frontend/         # Dashboard (HTML/CSS/JS)
-└── backend/          # Flask API + Iris pipeline
-    ├── app.py
-    ├── simulate_traffic.py
-    ├── anomaly.py
-    ├── iris/         # Segmentation, normalization, encoding, matching
-▶️ Running the Demo
-Requires Python 3.10+.
-
-Terminal 1 — API
-
-bash
-cd backend
-pip install -r requirements.txt
-python app.py
-Terminal 2 — Simulated Scanner Traffic
-
-bash
-cd backend
-python simulate_traffic.py
-Terminal 3 — Dashboard
-
-bash
-cd frontend
-python -m http.server 8000
-Open http://localhost:8000 in your browser.
+Data: CASIA-IrisV1 + sample datasets for other modalities
 
 📊 Results (Prototype Evaluation)
-Genuine-pair mean Hamming distance: 0.476
+Demonstrated iris recognition pipeline with measurable signal.
 
-Impostor-pair mean Hamming distance: 0.488
-
-Top-1 identification accuracy: 58.3% (vs. 12.5% random baseline)
+Modular design allows integration of additional biometric methods.
 
 ⚠️ Limitations
-Mocked matching for demo traffic
+Mocked matching for demo traffic.
 
-No liveness detection
+No liveness detection.
 
-No API authentication
+No API authentication.
 
-Plaintext JSON storage (TinyDB)
+Plaintext JSON storage (TinyDB).
 
-Prototype only — not suitable for production
+Prototype only — not suitable for production.
 
 🗺️ Roadmap
-Wire real iris pipeline into API
+Wire real biometric pipelines (voice, facial, fingerprint) into API.
 
-Add occlusion masking + advanced encoding
+Add occlusion masking + advanced encoding for iris.
 
-Scale TinyDB → MongoDB
+Scale TinyDB → MongoDB.
 
-Entrance/camera placement simulation
+Entrance/camera placement simulation.
 
-WebSocket push for real-time updates
+WebSocket push for real-time updates.
 
 🏆 Credits
 Developed by Isabela Risper Namada
